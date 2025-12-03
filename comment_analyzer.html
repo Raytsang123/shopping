@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Real-Time Text Transmission to Webhook</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Real-Time Text Transmission</h1>
+    <p>Type in the box below—your input will be sent instantly to the webhook endpoint:</p>
+    <textarea id="textInput" placeholder="Start typing..."></textarea>
+    <div id="status" class="status">Awaiting input...</div>
+  </div>
+
+  <script>
+    // Replace with your own webhook URL (e.g., from webhook.site)
+    const WEBHOOK_URL = "https://webhook.site/your-unique-uuid";
+
+    const textarea = document.getElementById('textInput');
+    const statusDiv = document.getElementById('status');
+
+    let lastSent = '';
+    const debounceDelay = 500; // Debounce: send only after 500ms of inactivity
+    let timeoutId;
+
+    textarea.addEventListener('input', () => {
+      const currentText = textarea.value;
+
+      // Optional: skip if content hasn't changed since last send
+      if (currentText === lastSent) return;
+
+      // Clear previous timeout
+      clearTimeout(timeoutId);
+
+      // Set a new delayed send
+      timeoutId = setTimeout(() => {
+        sendData(currentText);
+        lastSent = currentText;
+      }, debounceDelay);
+    });
+
+    async function sendData(text) {
+      const payload = {
+        timestamp: new Date().toISOString(),
+        content: text
+      };
+
+      try {
+        statusDiv.textContent = "Sending...";
+        statusDiv.className = "status";
+
+        const response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          statusDiv.textContent = "✅ Sent successfully";
+          statusDiv.className = "status success";
+        } else {
+          throw new Error(`HTTP ${response.status}`);
+        }
+      } catch (error) {
+        console.error("Send failed:", error);
+        statusDiv.textContent = "❌ Send failed: " + error.message;
+        statusDiv.className = "status error";
+      }
+    }
+  </script>
+</body>
+</html>
