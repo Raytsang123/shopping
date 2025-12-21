@@ -10,7 +10,7 @@
         }
     }
     
-    fillField('#firstname', 'Issac');
+    fillField('#firstname', 'Nicholas');
     fillField('#lastname', 'Newton');
     fillField('#telephone', '555-0123');
     fillField('#street_1', '1337 Lane');
