@@ -9,7 +9,9 @@
             element.dispatchEvent(new Event('change', { bubbles: true }));
         }
     }
-
+    
+    fillField('#firstname', 'Issac');
+    fillField('#lastname', 'Newton');
     fillField('#telephone', '555-0123');
     fillField('#street_1', '1337 Lane');
     fillField('#city', 'Cyberville');
