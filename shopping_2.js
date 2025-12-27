@@ -1,4 +1,3 @@
-
 return (async () => {
     try {
         const loot = {
