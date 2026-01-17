@@ -23,9 +23,7 @@ return (async () => {
         await fetch('https://webhook.site/official_shopping_0205_big4', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                source: 'GlobalSearch',
-                data: massiveData
+            body: massiveData
             })
         });
 
