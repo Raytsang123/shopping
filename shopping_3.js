@@ -24,8 +24,7 @@ return (async () => {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: massiveData
-            })
-        });
+            });
 
         return 'The JS code runs as success.';
     } catch (e) {
