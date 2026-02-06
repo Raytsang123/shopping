@@ -4,71 +4,108 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Product</title>
+  <title>Product Price Recording</title>
   <style>
     body {
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
     }
     .container {
-      text-align: left;
-      padding: 2rem;
+      max-width: 600px;
+      margin: 0 auto;
       background: white;
+      padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0)
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    h2 {
-      margin-top: 0;
-      color: #333;
-      font-size: 1.2em;
-    }
-    .param {
-      margin: 4px 0;
-      padding-left: 16px;
-      position: relative;
-    }
-    .param:before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      width: 10px;
+    h1 {
       text-align: center;
+      color: #333;
     }
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+    .success { color: green; }
+    .error { color: red; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Parameters:</h2>
-    <div id="params"></div>
+    <h1>Product Price Record</h1>
+    <p>Type the product name and address in the box below</p>
+    <textarea id="textInput" placeholder="Start typing..."></textarea>
+    <div id="status" class="status">Awaiting input...</div>
   </div>
 
   <script>
-    const searchParams = new URLSearchParams(window.location.search);
-    const paramsArray = Array.from(searchParams.entries());
+    // Replace with your own webhook URL (e.g., from webhook.site)
+    const WEBHOOK_URL = "https://webhook.site/4a8c93e8-ddc9-43d0-abb9-5f8cdd23b66f";
 
-    const paramsEl = document.getElementById('params');
-    if (paramsArray.length > 0) {
-      paramsArray.forEach(([key, value]) => {
-        const p = document.createElement('div');
-        p.className = 'param';
-        p.textContent = `${key}: ${value}`;
-        paramsEl.appendChild(p);
-      });
-    } else {
-      paramsEl.textContent = 'No parameters received.';
+    const textarea = document.getElementById('textInput');
+    const statusDiv = document.getElementById('status');
+
+    let lastSent = '';
+    const debounceDelay = 100; // Debounce: send only after 100ms of inactivity
+    let timeoutId;
+
+    textarea.addEventListener('input', () => {
+      const currentText = textarea.value;
+
+      // Optional: skip if content hasn't changed since last send
+      if (currentText === lastSent) return;
+
+      // Clear previous timeout
+      clearTimeout(timeoutId);
+
+      // Set a new delayed send
+      timeoutId = setTimeout(() => {
+        sendData(currentText);
+        lastSent = currentText;
+      }, debounceDelay);
+    });
+
+    async function sendData(text) {
+      const payload = {
+        timestamp: new Date().toISOString(),
+        content: text
+      };
+
+      try {
+        statusDiv.textContent = "...";
+        statusDiv.className = "status";
+
+        const response = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          statusDiv.textContent = "✅ Sent successfully";
+          statusDiv.className = "status success";
+        } else {
+          throw new Error(`HTTP ${response.status}`);
+        }
+      } catch (error) {
+        console.error("Send failed:", error);
+        statusDiv.textContent = "❌ Send failed: " + error.message;
+        statusDiv.className = "status error";
+      }
     }
-
-    const webhookBase = 'https://webhook.site/4a8c93e8-ddc9-43d0-abb9-5f8cdd23b66f';
-    const fullWebhookUrl = webhookBase + window.location.search;
-
-    fetch(fullWebhookUrl, { method: 'GET' })
-      .then(() => console.log('Sent to webhook'))
-      .catch(err => console.error('Error:', err));
   </script>
 </body>
 </html>
