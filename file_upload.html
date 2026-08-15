@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload File Test Page</title>
+  <style>
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #222;
+    }
+    h1 { font-size: 22px; }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    label { display: block; margin-bottom: 8px; font-weight: 600; }
+    input[type="file"] { margin-bottom: 12px; }
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #2563eb;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover { background: #1d4ed8; }
+    #result {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 6px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      display: none;
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+    }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { border: 1px solid #e5e7eb; padding: 6px 10px; text-align: left; }
+    th { background: #f9fafb; }
+  </style>
+</head>
+<body>
+  <h1>Upload File Test Page</h1>
+  <p>Pick or upload a file. The page reports only metadata (name, size, type) — file content is never transmitted anywhere.</p>
+
+  <div class="card">
+    <label for="singleFile">Single file input</label>
+    <input type="file" id="singleFile" />
+
+    <label for="multiFile">Multiple files input</label>
+    <input type="file" id="multiFile" multiple />
+
+    <button id="reportBtn">Report selected files</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    const resultBox = document.getElementById("result");
+
+    function describeFile(file) {
+      return [
+        "name: " + file.name,
+        "size: " + file.size + " bytes",
+        "type: " + (file.type || "(unknown)")
+      ].join("\n");
+    }
+
+    function report(files, source) {
+      if (!files || files.length === 0) {
+        resultBox.style.display = "block";
+        resultBox.style.background = "#fef2f2";
+        resultBox.style.borderColor = "#fecaca";
+        resultBox.textContent = "No file selected in: " + source;
+        return;
+      }
+      const lines = ["Source: " + source, "Count: " + files.length, ""];
+      Array.from(files).forEach((f, i) => {
+        lines.push("--- file " + (i + 1) + " ---");
+        lines.push(describeFile(f));
+        lines.push("");
+      });
+      resultBox.style.display = "block";
+      resultBox.style.background = "#f0fdf4";
+      resultBox.style.borderColor = "#bbf7d0";
+      resultBox.textContent = lines.join("\n");
+    }
+
+    document.getElementById("singleFile").addEventListener("change", (e) => {
+      report(e.target.files, "singleFile");
+    });
+
+    document.getElementById("multiFile").addEventListener("change", (e) => {
+      report(e.target.files, "multiFile");
+    });
+
+    document.getElementById("reportBtn").addEventListener("click", () => {
+      const single = document.getElementById("singleFile").files;
+      if (single.length > 0) {
+        report(single, "singleFile");
+      } else {
+        report(document.getElementById("multiFile").files, "multiFile");
+      }
+    });
+  </script>
+</body>
+</html>
